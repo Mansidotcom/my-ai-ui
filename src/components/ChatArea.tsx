@@ -12,10 +12,10 @@ export default function ChatArea() {
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    const newMessages = [
+    const newMessages: Message[] = [
       ...messages,
       { role: "user", text: input },
-      { role: "ai", text: `(AI response to "${input}")` },
+      { role: "ai", text: `(AI response to ${JSON.stringify(input)})` },
     ];
     setMessages(newMessages);
     setInput("");
@@ -34,6 +34,7 @@ export default function ChatArea() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto space-y-2 p-2">
         {messages.map((msg, i) => (
           <div
@@ -44,12 +45,12 @@ export default function ChatArea() {
                 : "bg-green-600 text-white"
             }`}
           >
-            {msg.role === "user" ? ": " : ": "}
-            {msg.text}
+            <strong>{msg.role.toUpperCase()}:</strong> {msg.text}
           </div>
         ))}
       </div>
 
+      {/* Input + Buttons */}
       <div className="flex gap-2 p-2 border-t">
         <input
           className="flex-1 p-2 rounded border dark:bg-gray-800"
