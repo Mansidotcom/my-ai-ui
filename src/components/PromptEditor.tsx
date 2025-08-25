@@ -24,7 +24,7 @@ export default function PromptEditor() {
       setSelected(t.name);
       setPrompt(t.prompt);
     }
-  };
+  };  
 
 const handleSave = async (val: string) => {
   const res = await fetch("/api/templates", {
@@ -32,9 +32,8 @@ const handleSave = async (val: string) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title: "Saved", prompt: val }),
   });
-
-  const t = (await res.json()) as Template; // explicit type cast
-  setTemplates([...templates, t]);
+  const t: Template = await res.json(); // ✅ type fix
+  setTemplates((prev: Template[]) => [...prev, t]); // ✅ type fix
   alert("Template saved");
 };
 
