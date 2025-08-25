@@ -15,7 +15,7 @@ export default function PromptEditor() {
   useEffect(() => {
     fetch("/api/templates")
       .then((res) => res.json())
-      .then((data) => setTemplates(data));
+      .then((data: Template[]) => setTemplates(data));
   }, []);
 
   const handleLoad = (id: number) => {
@@ -26,8 +26,16 @@ export default function PromptEditor() {
     }
   };
 
-  const handleSave = () => {
-    alert("Prompt saved: " + prompt);
+  const handleSave = async (val: string) => {
+    const res = await fetch("/api/templates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "Saved", prompt: val }),
+    });
+
+    const t: Template = await res.json();
+    setTemplates((prev: Template[]) => [...prev, t]); // Type fix
+    alert("Template saved");
   };
 
   return (
@@ -43,7 +51,7 @@ export default function PromptEditor() {
 
       <div className="flex gap-2 mt-2">
         <button
-          onClick={handleSave}
+          onClick={() => handleSave(prompt)}
           className="px-3 py-1 rounded bg-blue-600 text-white"
         >
           Save
