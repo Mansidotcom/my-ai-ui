@@ -9,7 +9,7 @@ type Template = {
 
 export default function PromptEditor() {
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [selected, setSelected] = useState("");
+  const [_selected, setSelected] = useState("");
   const [prompt, setPrompt] = useState("");
 
   useEffect(() => {
@@ -26,17 +26,18 @@ export default function PromptEditor() {
     }
   };
 
-  const handleSave = async (val: string) => {
-    const res = await fetch("/api/templates", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "Saved", prompt: val }),
-    });
+const handleSave = async (val: string) => {
+  const res = await fetch("/api/templates", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: "Saved", prompt: val }),
+  });
 
-    const t: Template = await res.json();
-    setTemplates((prev: Template[]) => [...prev, t]); // Type fix
-    alert("Template saved");
-  };
+  const t = (await res.json()) as Template; // explicit type cast
+  setTemplates([...templates, t]);
+  alert("Template saved");
+};
+
 
   return (
     <div className="p-4 border rounded-lg dark:bg-gray-900 bg-gray-100">
